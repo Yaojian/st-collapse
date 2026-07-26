@@ -1,4 +1,4 @@
-import { chat, eventSource, event_types, updateMessageBlock } from '../../../../script.js';
+import { chat, eventSource, event_types, messageFormatting, updateMessageBlock } from '../../../../script.js';
 
 const processedMessages = new Set();
 
@@ -48,7 +48,7 @@ function injectContinuityElement(messageId) {
     details.appendChild(summary);
 
     const content = document.createElement('div');
-    content.textContent = message.extra.continuity_text;
+    content.innerHTML = messageFormatting(message.extra.continuity_text, '', false, false, messageId, {}, false);
     details.appendChild(content);
 
     textEl.parentNode.insertBefore(details, textEl.nextSibling);
