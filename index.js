@@ -62,6 +62,7 @@ function processMessage(messageId) {
         injectContinuityElement(messageId);
     } catch {
         message.mes = originalMes;
+        delete message.extra.continuity_text;
         return false;
     }
 
@@ -71,7 +72,7 @@ function processMessage(messageId) {
 
 function injectContinuityElement(messageId) {
     const message = chat[messageId];
-    if (!message?.extra?.continuity_text) return;
+    if (!message?.extra?.continuity_text?.trim()) return;
 
     const block = document.querySelector(`#chat .mes[mesid="${messageId}"]`);
     if (!block) return;
@@ -98,8 +99,12 @@ function injectContinuityElement(messageId) {
 function processExistingMessages() {
     if (!chat || chat.length === 0) return;
     chat.forEach((msg, idx) => {
-        if (!msg.is_user && includesTag(msg.mes)) {
-            processMessage(idx);
+        if (!msg.is_user) {
+            if (includesTag(msg.mes)) {
+                processMessage(idx);
+            } else if (msg.extra?.continuity_text?.trim()) {
+                injectContinuityElement(idx);
+            }
         }
     });
 }
