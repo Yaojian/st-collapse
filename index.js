@@ -1,4 +1,4 @@
-import { chat, eventSource, event_types, updateMessageBlock } from '../../../script.js';
+import { chat, eventSource, event_types, updateMessageBlock } from '../../../../script.js';
 
 const processedMessages = new Set();
 
