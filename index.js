@@ -5,6 +5,7 @@ const processedMessages = new Set();
 const defaultSettings = {
     tag: 'continuity',
     label: 'Continuity',
+    collapsed: true,
 };
 
 function escapeRegex(string) {
@@ -28,6 +29,11 @@ function getRegex() {
 
 function getLabel() {
     return extension_settings.continuity_collapse?.label || defaultSettings.label;
+}
+
+function shouldCollapse() {
+    const value = extension_settings.continuity_collapse?.collapsed;
+    return value !== undefined ? value : defaultSettings.collapsed;
 }
 
 function includesTag(mes) {
@@ -76,6 +82,7 @@ function injectContinuityElement(messageId) {
 
     const details = document.createElement('details');
     details.className = 'mes_continuity_details';
+    details.open = !shouldCollapse();
 
     const summary = document.createElement('summary');
     summary.textContent = getLabel();
@@ -108,6 +115,7 @@ function loadSettings() {
     }
     $('#cc_tag').val(extension_settings.continuity_collapse.tag);
     $('#cc_label').val(extension_settings.continuity_collapse.label);
+    $('#cc_collapsed').prop('checked', shouldCollapse());
 }
 
 export async function init() {
@@ -122,6 +130,10 @@ export async function init() {
     });
     $('#cc_label').on('input', function () {
         extension_settings.continuity_collapse.label = $(this).val();
+        saveSettingsDebounced();
+    });
+    $('#cc_collapsed').on('change', function () {
+        extension_settings.continuity_collapse.collapsed = $(this).prop('checked');
         saveSettingsDebounced();
     });
 
